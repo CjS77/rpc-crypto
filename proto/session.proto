@@ -6,6 +6,10 @@ option java_package = "io.rpccrypto.session";
 option java_outer_classname = "SessionProto";
 option objc_class_prefix = "SSN";
 
+/**
+ * When connecting to a RPC-Crypto server, we will make use of the concept of a _session_. Every session between server
+ * and client will be assigned a unique ID.
+ */
 service Session {
     rpc sessionCreate(SessionCreateRequest) returns (SessionCreateResponse) {}
 }

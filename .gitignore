@@ -36,3 +36,8 @@ jspm_packages/
 # dotenv environment variables file
 .env
 
+# config data
+!config/index.js
+!config/config.sample.json
+config
+
