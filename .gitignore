@@ -37,7 +37,7 @@ jspm_packages/
 .env
 
 # config data
+config/*
 !config/index.js
 !config/config.sample.json
-config
 

@@ -1,0 +1,6 @@
+{
+  "certs": {
+    "cert": "server.crt",
+    "key": "server.key"
+  }
+}
