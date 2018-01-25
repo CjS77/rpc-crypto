@@ -1,0 +1,19 @@
+syntax = "proto3";
+package rpc_crypto;
+
+option java_multiple_files = true;
+option java_package = "io.rpccrypto.session";
+option java_outer_classname = "SessionProto";
+option objc_class_prefix = "SSN";
+
+service Session {
+    rpc sessionCreate(SessionCreateRequest) returns (SessionCreateResponse) {}
+}
+
+message SessionCreateRequest {
+
+}
+
+message SessionCreateResponse {
+    string session_id = 1;
+}

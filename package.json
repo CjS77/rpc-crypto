@@ -1,0 +1,34 @@
+{
+  "name": "rpc-crypto",
+  "version": "0.1.0",
+  "description": "A gRPC implementation for crypto-currency messaging",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CjS77/rpc-crypto.git"
+  },
+  "keywords": [
+    "gRPC",
+    "cryptocurrency",
+    "bitcoin",
+    "trading",
+    "exchange",
+    "ccxt"
+  ],
+  "author": "Cayle Sharrock <cayle@nimbustech.biz> (http://nimbustech.biz)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CjS77/rpc-crypto/issues"
+  },
+  "homepage": "https://github.com/CjS77/rpc-crypto#readme",
+  "dependencies": {
+    "google-protobuf": "^3.5.0",
+    "grpc": "^1.8.4"
+  }
+}
