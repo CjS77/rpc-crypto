@@ -19,14 +19,8 @@ $LOCAL_BIN/grpc_tools_node_protoc -I/usr/local/include -I. \
        --plugin=protoc-gen-grpc=$LOCAL_BIN/grpc_tools_node_protoc_plugin \
        session.proto
 echo "Node interface files created"
-# Generate the REST reverse proxy.
-#$LOCAL_BIN/grpc_tools_node_protoc -I/usr/local/include -I. \
-#       -I$GOPATH/src \
-#       -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-#       --grpc-gateway_out=logtostderr=true:$BUILD_DIR/web \
-#       session.proto
 
-# Finally, generate the swagger file which describes the REST API in detail.
+# Generate the swagger file which describes the REST API in detail.
 $LOCAL_BIN/grpc_tools_node_protoc -I/usr/local/include -I. \
        -I$GOPATH/src \
        -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \

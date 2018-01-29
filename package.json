@@ -7,7 +7,7 @@
     "doc": "doc"
   },
   "scripts": {
-    "build": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./build/node --grpc_out=./build --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` ./proto/session.proto",
+    "build": "./proto/gen_protos.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
