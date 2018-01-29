@@ -1,6 +1,6 @@
 syntax = "proto3";
 package rpc_crypto;
-
+import "google/api/annotations.proto";
 option java_multiple_files = true;
 option java_package = "io.rpccrypto.session";
 option java_outer_classname = "SessionProto";
@@ -11,7 +11,12 @@ option objc_class_prefix = "SSN";
  * and client will be assigned a unique ID.
  */
 service Session {
-    rpc sessionCreate(SessionCreateRequest) returns (SessionCreateResponse) {}
+    rpc sessionCreate (SessionCreateRequest) returns (SessionCreateResponse) {
+        option (google.api.http) = {
+      post: "/session/create"
+      body: "*"
+    };
+    }
 }
 
 message SessionCreateRequest {

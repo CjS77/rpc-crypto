@@ -7,7 +7,7 @@
     "doc": "doc"
   },
   "scripts": {
-    "build": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./build/ --grpc_out=./build --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` ./proto/session.proto",
+    "build": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./build/node --grpc_out=./build --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` ./proto/session.proto",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -29,8 +29,12 @@
   },
   "homepage": "https://github.com/CjS77/rpc-crypto#readme",
   "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "google-proto-files": "^0.14.1",
     "google-protobuf": "^3.5.0",
     "grpc": "^1.8.4",
+    "grpc-dg": "^0.3.0",
     "logform": "^1.2.2",
     "winston": "^2.4.0"
   },

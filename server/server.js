@@ -1,11 +1,10 @@
-/* jshint node:true */
 'use strict';
 
-const services = require('../build/proto/session_grpc_pb');
-const messages = require('../build/proto/session_pb');
+const services = require('../build/node/session_grpc_pb');
+const messages = require('../build/node/session_pb');
 const grpc = require('grpc');
 const certs = require('../lib/certs');
-
+const { logger, exit } = require('../lib/logging');
 /**
  * Implements the SayHello RPC method.
  */
@@ -29,10 +28,10 @@ async function main() {
         server.addService(services.SessionService, {sessionCreate: createSession});
         server.bind('0.0.0.0:50051', ssl_creds);
         server.start();
-        console.log('Listening on port 50051');
+        logger.log('info', 'Listening on port 50051');
     } catch (err) {
-        console.log(err);
-        process.exit(1);
+        logger.error(err);
+        exit('Goodbye', 0);
     }
 }
 

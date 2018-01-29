@@ -7,12 +7,6 @@ const grpc = require('grpc');
 const certs = require("../lib/certs");
 const logger = require('../lib/logging');
 
-function exit(msg, code = 0) {
-    const level = code === 0 ? 'info' : 'error';
-    logger.log(level, msg);
-    process.exit(code);
-}
-
 function main() {
     const keyPair = certs.loadKeyPair('client');
     const CA = certs.loadCA();
