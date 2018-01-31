@@ -10,6 +10,7 @@
     "lint": "eslint . --fix",
     "build": "./proto/gen_protos.sh",
     "test:mocha": "NODE_ENV=test nyc mocha test/*_test.js",
+    "test:mocha_cov": "NODE_ENV=test nyc -r lcovonly mocha test/*_test.js && nyc report --reporter=text-lcov | coveralls",
     "test:integration": "NODE_ENV=test nyc mocha test/integration/*_test.js",
     "test": "npm run lint && npm run test:mocha"
   },
@@ -44,6 +45,7 @@
     "winston": "^2.4.0"
   },
   "devDependencies": {
+    "coveralls": "^3.0.0",
     "eslint": "^4.16.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^5.2.1",
@@ -51,6 +53,7 @@
     "eslint-plugin-standard": "^3.0.1",
     "grpc-tools": "^1.6.6",
     "mocha": "^5.0.0",
+    "mocha-lcov-reporter": "^1.3.0",
     "nock": "^9.1.6",
     "nyc": "^11.4.1"
   }

@@ -31,4 +31,4 @@ jobs:
 
       # run tests!
       - run: npm run lint
-      - run: npm run test:mocha
+      - run: npm run test:mocha_cov
