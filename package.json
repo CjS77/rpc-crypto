@@ -7,7 +7,7 @@
     "doc": "doc"
   },
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint . --fix",
     "build": "./proto/gen_protos.sh",
     "test:mocha": "NODE_ENV=test nyc mocha test/*_test.js",
     "test:integration": "NODE_ENV=test nyc mocha test/integration/*_test.js",

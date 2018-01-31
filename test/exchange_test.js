@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 const assert = require('assert');
 const exchange = require('../lib/protoImpl/exchange');
 const streams = require('stream');
@@ -27,7 +29,7 @@ describe('exchange service module', () => {
             'www': 'https://www.bitfinex.com',
             'doc': [
                 'https://bitfinex.readme.io/v1/docs',
-                'https://github.com/bitfinexcom/bitfinex-api-node',
+                'https://github.com/bitfinexcom/bitfinex-api-node'
             ]
         });
         assert.deepEqual(out, {
@@ -79,7 +81,7 @@ describe('exchange service module', () => {
             'urls': { www: 'http://test.com' },
             'requiredCredentials': {
                 'apiKey': true,
-                'secret': true,
+                'secret': true
             }
         });
         assert.equal(out.id, 'test');
@@ -128,12 +130,12 @@ describe('exchange service module', () => {
         });
     });
 
-    it('initService', async () => {
+    it('initService', async() => {
         const server = new grpc.Server();
         await exchange.initService(server);
         const handlers = server.handlers;
         assert.ok(handlers['/rpc_crypto.Exchange/getExchangeIDs']);
         assert.ok(handlers['/rpc_crypto.Exchange/getExchangeInfo']);
         assert.ok(handlers['/rpc_crypto.Exchange/listExchanges']);
-    })
+    });
 });
