@@ -3,7 +3,7 @@ const config = require('../config');
 const grpc = require('grpc');
 const certs = require('../lib/certs');
 const { logger, exit } = require('../lib/logging');
-const addExchangeService = require('../lib/protoImpl/exchange');
+const Exchange = require('../lib/protoImpl/exchange');
 
 /**
  * Starts an RPC server that receives requests for the Greeter service at the
@@ -14,7 +14,7 @@ async function main() {
         const keyPair = await certs.loadKeyPair('server');
         const sslCreds = grpc.ServerCredentials.createSsl(null, [keyPair], true);
         const server = new grpc.Server();
-        await addExchangeService(server);
+        await Exchange.initService(server);
         const serverHost = `${config.server.hostname}:${config.server.port}`;
         server.bind(serverHost, sslCreds);
         server.start();
