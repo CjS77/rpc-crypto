@@ -1,16 +1,14 @@
-const { exit } = require('../lib/logging');
 const grpc = require('grpc');
 const certs = require('../lib/certs');
 const path = require('path');
 const config = require('../config');
 
-async function setupClient() {
+async function createClient() {
     const exchange = await grpc.load({ file: 'exchange.proto', root: path.resolve(__dirname, '../proto') });
     const keyPair = certs.loadKeyPair('client');
     const CA = certs.loadCA();
     if (!keyPair || !CA) {
-        exit('Could not load certificates. Exiting.', 1);
-        return;
+        return Promise.reject(new Error('Could load SSL certificates. Check your config file.'));
     }
     const creds = grpc.credentials.createSsl(certs.loadCA(), keyPair.private_key, keyPair.cert_chain);
     const serverHost = `${config.server.hostname}:${config.server.port}`;
@@ -18,5 +16,5 @@ async function setupClient() {
 }
 
 module.exports = {
-    setupClient
+    createClient
 };
