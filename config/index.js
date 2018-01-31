@@ -3,6 +3,14 @@
 const config = require('./config.json');
 
 const defaultConfig = {
+    server: {
+        hostname: 'localhost',
+        port: 50051
+    },
+    rest: {
+        hostname: 'localhost',
+        port: 8080
+    },
     certs: {
         ca: 'config/ca.cert.pem',
         client: {

@@ -2,6 +2,7 @@ const { exit } = require('../lib/logging');
 const grpc = require('grpc');
 const certs = require('../lib/certs');
 const path = require('path');
+const config = require('../config');
 
 async function setupClient() {
     const exchange = await grpc.load({ file: 'exchange.proto', root: path.resolve(__dirname, '../proto') });
@@ -12,7 +13,8 @@ async function setupClient() {
         return;
     }
     const creds = grpc.credentials.createSsl(certs.loadCA(), keyPair.private_key, keyPair.cert_chain);
-    return new exchange.rpc_crypto.Exchange('localhost:50051', creds);
+    const serverHost = `${config.server.hostname}:${config.server.port}`;
+    return new exchange.rpc_crypto.Exchange(serverHost, creds);
 }
 
 module.exports = {

@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { exit } = require('../lib/logging');
 const resolve = require('path').resolve;
+const config = require('../config');
 
 const app = express();
 app.use(bodyParser.json());
@@ -21,9 +22,10 @@ const credentials = grpc.credentials.createSsl(CA, keyPair.private_key, keyPair.
 const protoFiles = ['exchange.proto'];
 
 // load the proxy on / URL  -- see https://github.com/grpc/grpc/issues/9591 for how we resolved the import issues
+const serverHost = `${config.server.hostname}:${config.server.port}`;
 app.use('/', grpcGateway(
     protoFiles,
-    'localhost:50051',
+    serverHost,
     credentials,
     true,
     resolve(__dirname, '../proto')

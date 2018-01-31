@@ -1,5 +1,5 @@
 'use strict';
-
+const config = require('../config');
 const grpc = require('grpc');
 const certs = require('../lib/certs');
 const { logger, exit } = require('../lib/logging');
@@ -15,9 +15,10 @@ async function main() {
         const sslCreds = grpc.ServerCredentials.createSsl(null, [keyPair], true);
         const server = new grpc.Server();
         await addExchangeService(server);
-        server.bind('0.0.0.0:50051', sslCreds);
+        const serverHost = `${config.server.hostname}:${config.server.port}`;
+        server.bind(serverHost, sslCreds);
         server.start();
-        logger.log('info', 'Listening on port 50051');
+        logger.log('info', `Listening on ${serverHost}`);
     } catch (err) {
         logger.error(err);
         exit('Goodbye', 0);
