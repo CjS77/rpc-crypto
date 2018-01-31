@@ -7,6 +7,7 @@
     "doc": "doc"
   },
   "scripts": {
+    "lint": "eslint .",
     "build": "./proto/gen_protos.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -30,15 +31,22 @@
   "homepage": "https://github.com/CjS77/rpc-crypto#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "ccxt": "^1.10.909",
     "express": "^4.16.2",
     "google-proto-files": "^0.14.1",
     "google-protobuf": "^3.5.0",
     "grpc": "^1.8.4",
-    "grpc-dg": "^0.3.0",
+    "grpc-dg": "^0.4.2",
     "logform": "^1.2.2",
+    "protobufjs": "^6.8.4",
     "winston": "^2.4.0"
   },
   "devDependencies": {
+    "eslint": "^4.16.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
     "grpc-tools": "^1.6.6"
   }
 }

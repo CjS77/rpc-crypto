@@ -2,7 +2,7 @@
 
 This module has one job:
 
-> Take in crypto-currency and perhaps other finaincial data from web-based APIs and aggregate them into a single,
+> Take in crypto-currency and perhaps other financial data from web-based APIs and aggregate them into a single,
 unified binary messaging system (gRPC), as well as a REST-based service for applications that can't run gRPC
 
 The main server implementation is written in node.js. This is because most (all?) of the cryptocurrency exchange APIs
@@ -20,7 +20,6 @@ $ npm install
 $ npm run build
 ```
 
-This will compile the `.proto` files for ther server and its dependencies and put the stubs/interfaces in the `build` directory. 
 ## REST server
 
 For application that cannot read gRPC messages, there is a REST server implementation based on express.

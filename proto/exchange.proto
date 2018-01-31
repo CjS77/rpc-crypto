@@ -1,0 +1,85 @@
+syntax = "proto3";
+package rpc_crypto;
+import "google/api/annotations.proto";
+
+/**
+ * Cryptocurrency exchange management
+ */
+service Exchange {
+    // Return an array of supported exchange IDs
+    rpc getExchangeIDs (Empty) returns (ExchangeIDs) {
+        option (google.api.http) = { get: "/exchange_ids" };
+    }
+
+    // Return the metadata for a given exchange
+    rpc getExchangeInfo (getExchangeInfoRequest) returns (ExchangeInfo) {
+        option (google.api.http) = { get: "/exchange/{id}" };
+    }
+
+    // Stream all the metadata for all supported exchanges
+    rpc listExchanges (Empty) returns (stream ExchangeInfo) {
+        option (google.api.http) = { get: "/exchanges" };
+    }
+}
+
+message Empty {
+}
+
+message getExchangeInfoRequest {
+    string id = 1;
+}
+
+message ExchangeIDs {
+    repeated string id = 1;
+}
+
+message ExchangeInfo {
+    string id = 1; // lowercase string identifier
+    string name = 2; // human-readable string
+    repeated string countries = 3; // A string literal or an array of string literals of 2-symbol ISO country codes, where the exchange is operating from
+    ExchangeCapabilities capabilities = 4; // exchange features
+    ExchangeURLs urls = 5; // exchange URL details
+    string version = 6; // A string literal containing version identifier for current exchange API.
+    RequiredCredentials required_credentials = 7; // a boolean map of required credentials for full API access
+}
+
+message ExchangeCapabilities {
+    bool cors = 1;
+    bool public_api = 2;
+    bool private_api = 3;
+    bool cancel_order = 4;
+    bool create_deposit_address = 5;
+    bool create_order = 6;
+    bool deposit = 7;
+    bool fetch_balance = 8;
+    bool fetch_closed_orders = 9;
+    bool fetch_currencies = 10;
+    bool fetch_deposit_address = 11;
+    bool fetch_markets = 12;
+    bool fetch_my_trades = 13;
+    bool fetch_ohlcv = 14;
+    bool fetch_open_orders = 15;
+    bool fetch_order = 16;
+    bool fetch_order_book = 17;
+    bool fetch_orders = 18;
+    bool fetch_ticker = 19;
+    bool fetch_tickers = 20;
+    bool fetch_bids_asks = 21;
+    bool fetch_trades = 22;
+    bool withdraw = 23;
+}
+
+message ExchangeURLs {
+    string www = 1; // The main HTTP website URL.
+    string api = 2; // The single string literal base URL for API calls or an associative array of separate URLs for private and public APIs.
+    string doc = 3; // A single string URL link to original documentation for exchange API on their website or an array of links to docs.
+}
+
+message RequiredCredentials {
+    bool api_key = 1;
+    bool secret = 2;
+    bool uid = 3;
+    bool login = 4;
+    bool password = 5;
+}
+
