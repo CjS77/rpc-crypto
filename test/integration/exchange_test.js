@@ -47,4 +47,25 @@ describe('Exchange Service', () => {
             done();
         });
     });
+
+    it('addExchange with unauthenticated connection', done => {
+        const req = { id: 'gdax' };
+        client.addExchange(req, (err, res) => {
+            assert.ifError(err);
+            assert.equal(res.handle, 1);
+            assert.equal(res.authenticated, false);
+            done();
+        });
+    });
+
+    it('getTradePairs', done => {
+        const call = client.getTradePairs({ handle: 1 });
+        call.on('data', (pair) => {
+            assert.ok(pair.id);
+            assert.ok(pair.symbol);
+            assert.ok(pair.base);
+            assert.ok(pair.quote);
+        });
+        call.on('end', done);
+    });
 });

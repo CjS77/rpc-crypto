@@ -3,7 +3,7 @@ const certs = require('../lib/certs');
 const grpcGateway = require('grpc-dg');
 const express = require('express');
 const bodyParser = require('body-parser');
-const { exit } = require('../lib/logging');
+const { exit } = require('../lib/utils');
 const resolve = require('path').resolve;
 const config = require('../config');
 
