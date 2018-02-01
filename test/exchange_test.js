@@ -221,6 +221,68 @@ describe('exchange service module', () => {
             done();
         });
     });
+
+    it('getTicker', done => {
+        nock('https://api.gdax.com')
+            .get('/products/BTC-USD/ticker')
+            .reply(200, {
+                'trade_id': 35378079,
+                'price': '8924.00000000',
+                'size': '0.00493623',
+                'bid': '8923.04',
+                'ask': '8923.05',
+                'volume': '37667.55396369',
+                'time': '2018-02-01T22:45:44.547000Z'
+            });
+        const req = {
+            handle: 1,
+            symbol: 'BTC/USD'
+        };
+        exchange.getTicker({ request: req }, (err, res) => {
+            assert.ifError(err);
+            assert.equal(res.symbol, 'BTC/USD');
+            assert.equal(res.timestamp, 1517525144547);
+            assert.equal(res.bid, 8923.04);
+            assert.equal(res.ask, 8923.05);
+            assert.equal(res.base_volume, 37667.55396369);
+            done();
+        });
+    });
+
+    it('getTicker with no handle', done => {
+        const req = {
+            symbol: 'BTC/USD'
+        };
+        exchange.getTicker({ request: req }, err => {
+            assert.equal(err.code, grpc.status.INVALID_ARGUMENT);
+            done();
+        });
+    });
+
+    it('getTicker with incorrect handle', done => {
+        const req = {
+            handle: -1,
+            symbol: 'BTC/USD'
+        };
+        exchange.getTicker({ request: req }, err => {
+            assert.equal(err.code, grpc.status.NOT_FOUND);
+            done();
+        });
+    });
+
+    it('getTicker with GDAX down', done => {
+        nock('https://api.gdax.com')
+            .get('/products/BTC-USD/ticker')
+            .reply(404, {});
+        const req = {
+            handle: 1,
+            symbol: 'BTC/USD'
+        };
+        exchange.getTicker({ request: req }, (err, res) => {
+            assert.equal(err.code, grpc.status.NOT_FOUND);
+            done();
+        });
+    });
 });
 
 function newStream() {

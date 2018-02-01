@@ -68,4 +68,16 @@ describe('Exchange Service', () => {
         });
         call.on('end', done);
     });
+
+    it('getTicker', done => {
+        const req = { handle: 1, symbol: 'BTC/USD' };
+        client.getTicker(req, (err, res) => {
+            assert.ifError(err);
+            assert.equal(res.symbol, 'BTC/USD');
+            assert.ok(res.timestamp);
+            assert.ok(res.bid);
+            assert.ok(res.ask);
+            done();
+        });
+    });
 });

@@ -35,6 +35,13 @@ service Exchange {
             get: "/products/{exchangeHandle}"
         };
     }
+
+    // Return the latest ticket for the given exchange and trade pair
+    rpc getTicker (getTickerRequest) returns (Ticker) {
+        option (google.api.http) = {
+            get: "/ticker/{exchangeHandle}"
+        };
+    }
 }
 
 message Empty {
@@ -148,4 +155,30 @@ message TradePairInfo {
     TradeLimit price_limit = 9; // Limits on prices in orders
     TradeLimit value_limit = 10; // Limits on order value (size * price)
     string info = 11; // JSON string of the original unparsed market info from the exchange
+}
+
+message getTickerRequest {
+    uint32 handle = 1; // the id for the exchange to query
+    string symbol = 2; // the ticker symbol [BTC/USD]
+}
+
+message Ticker {
+    string symbol = 1; // Trade pair symbol
+    int64 timestamp = 2; // unix epoch
+    string datetime = 3; // ISO8601 datetime string with milliseconds
+    double high = 4; // highest price
+    double low = 5; // lowest price
+    double bid = 6; // current bid (buy) price
+    double ask = 7; // current ask (sell) price
+    double vwap = 8; // volume weighed average price
+    double open = 9; // open price
+    double close = 10; // closing price
+    double first = 11; // price of first trade
+    double last = 12; // price of last trade
+    double change = 13; // change in price in quote terms
+    double percentage = 14; // percentage price change
+    double average = 15; // average price (also see vwap)
+    double base_volume = 16; // volume of base currency
+    double quote_volume = 17; // volume of quote currency
+    string info = 18; // original stringified JSON object of exchange response
 }
