@@ -11,7 +11,7 @@
     "build": "./proto/gen_protos.sh",
     "test:mocha": "NODE_ENV=test nyc mocha test/*_test.js",
     "test:mocha_cov": "NODE_ENV=test nyc -r lcovonly mocha test/*_test.js && nyc report --reporter=text-lcov | coveralls",
-    "test:integration": "NODE_ENV=test nyc mocha test/integration/*_test.js",
+    "test:integration": "NODE_ENV=test mocha test/integration/*_test.js",
     "test": "npm run lint && npm run test:mocha"
   },
   "repository": {
@@ -40,6 +40,7 @@
     "google-protobuf": "^3.5.0",
     "grpc": "^1.8.4",
     "grpc-dg": "^0.4.2",
+    "lodash.pick": "^4.4.0",
     "logform": "^1.2.2",
     "protobufjs": "^6.8.4",
     "winston": "^2.4.0"

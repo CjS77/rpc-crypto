@@ -20,6 +20,21 @@ service Exchange {
     rpc listExchanges (Empty) returns (stream ExchangeInfo) {
         option (google.api.http) = { get: "/exchanges" };
     }
+
+    // Add a connection for an exchange
+    rpc addExchange (AddExchangeRequest) returns (AddExchangeResponse) {
+        option (google.api.http) = {
+            post: "/exchanges"
+            body: "*"
+        };
+    }
+
+    // Return the supported trade pairs for the exchange
+    rpc getTradePairs (SimpleExchangeRequest) returns (stream TradePairInfo) {
+        option (google.api.http) = {
+            get: "/products/{exchangeHandle}"
+        };
+    }
 }
 
 message Empty {
@@ -83,3 +98,49 @@ message RequiredCredentials {
     bool password = 5;
 }
 
+message APICredentials {
+    string api_key = 1;
+    string secret = 2;
+    string uid = 3;
+    string login = 4;
+    string password = 5;
+}
+
+message AddExchangeRequest {
+    string id = 1; // The identifier for the exchange
+    APICredentials api_credentials = 3; // The API credentials, if you wish to perform authenticated requests
+}
+
+message AddExchangeResponse {
+    uint32 handle = 1;
+    bool authenticated = 2;
+}
+
+message SimpleExchangeRequest {
+    uint32 handle = 1;
+}
+
+message ProductPrecision {
+    uint32 price = 1; // precision for price quotes
+    uint32 amount = 2; // precision for size quotes
+    uint32 cost = 3; // precision for value quotes
+}
+
+message TradeLimit {
+    double min = 1;
+    double max = 2;
+}
+
+message TradePairInfo {
+    string symbol = 1; // uppercase string literal of a pair of currencies [BTC/USD]
+    string id = 2; // string literal for referencing within an exchange
+    string base = 3; // uppercase string, base currency, 3 or more letters
+    string quote = 4; // uppercase string, quote currency, 3 or more letters
+    bool active = 5; // boolean, market status
+    ProductPrecision precision = 6; // number of decimal digits "after the dot"
+    double lot = 7; // order amount should be a multiple of lot
+    TradeLimit size_limit = 8; // Limits on order sizes
+    TradeLimit price_limit = 9; // Limits on prices in orders
+    TradeLimit value_limit = 10; // Limits on order value (size * price)
+    string info = 11; // JSON string of the original unparsed market info from the exchange
+}

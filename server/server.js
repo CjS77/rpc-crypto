@@ -2,7 +2,8 @@
 const config = require('../config');
 const grpc = require('grpc');
 const certs = require('../lib/certs');
-const { logger, exit } = require('../lib/logging');
+const logger = require('../lib/logging');
+const { exit } = require('../lib/utils');
 const Exchange = require('../lib/protoImpl/exchange');
 
 /**
