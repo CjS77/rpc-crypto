@@ -1,6 +1,13 @@
 {
   "certs": {
-    "cert": "server.crt",
-    "key": "server.key"
+    "ca": "config/ca.cert.pem",
+    "server": {
+      "cert": "config/server.crt",
+      "key": "config/server.key.pem"
+    },
+    "client": {
+      "cert": "config/client.crt",
+      "key": "config/client.key.pem"
+    }
   }
 }
