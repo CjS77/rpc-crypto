@@ -30,7 +30,7 @@ service Exchange {
     }
 
     // Return the supported trade pairs for the exchange
-    rpc getTradePairs (SimpleExchangeRequest) returns (stream TradePairInfo) {
+    rpc getTradePairs (getTradePairsRequest) returns (stream TradePairInfo) {
         option (google.api.http) = {
             get: "/products/{exchangeHandle}"
         };
@@ -118,6 +118,11 @@ message AddExchangeResponse {
 
 message SimpleExchangeRequest {
     uint32 handle = 1;
+}
+
+message getTradePairsRequest {
+    uint32 handle = 1;
+    bool reload = 2;
 }
 
 message ProductPrecision {
