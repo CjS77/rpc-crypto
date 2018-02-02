@@ -1,4 +1,4 @@
-syntax = "proto3";
+    syntax = "proto3";
 package rpc_crypto;
 import "google/api/annotations.proto";
 
@@ -54,6 +54,18 @@ service Exchange {
     rpc getOrderbook (OrderbookRequest) returns (Orderbook) {
         option (google.api.http) = {
             get: "/orderbook/{exchangeHandle}/{symbol}"
+        };
+    }
+
+    rpc getCandles (CandleRequest) returns (Candles) {
+        option (google.api.http) = {
+            get: "/candles/{exchangeHandle}/{symbol}"
+        };
+    }
+
+    rpc getTradeHistory (TradeHistoryRequest) returns (stream HistoricTrade) {
+        option (google.api.http) = {
+            get: "/tradehistory/{exchangeHandle}/{symbol}"
         };
     }
 }
@@ -214,4 +226,66 @@ message Orderbook {
     string datetime = 2; // Human-readable time stamp
     repeated AggregatedLevel bids = 4; // Ordered array of buy orders from high to low
     repeated AggregatedLevel asks = 5; // Ordered array of sell orders from low to high
+}
+
+message CandleRequest {
+    uint32 handle = 1; // the handle for the exchange to query
+    string symbol = 2; // The trade pair to query
+    enum Timeframe {
+        tf1m = 0;
+        tf5m = 1;
+        tf15m = 2;
+        tf30m = 3;
+        tf1h = 4;
+        tf2h = 5;
+        tf4h = 6;
+        tf12h = 7;
+        tf1d = 8;
+        tf1w = 9;
+        tf1M = 10;
+        tf1y = 11;
+    }
+    Timeframe timeframe = 4;
+    uint64 since = 5; // The start of the candle period (Unix epoch)
+    int32 limit = 6; // The max number of candles to fetch
+    string params = 7; // JSON string of extra parameters
+}
+
+message OHLCV {
+    uint64 timestamp = 1; // UTC timestamp in milliseconds
+    double open = 2; // (O)pen price
+    double high = 3; // (H)ighest price
+    double low = 4; // (L)owest price
+    double close = 5; // (C)losing price
+    double volume = 6; // (V)olume (in terms of the base currency)
+}
+
+message Candles {
+    repeated OHLCV candles = 1;
+}
+
+message TradeHistoryRequest {
+    uint32 handle = 1; // the handle for the exchange to query
+    string symbol = 2; // The trade pair to query
+    uint64 since = 3; // The start of the trade period (Unix epoch)
+    int32 limit = 4; // The max number of trades to fetch
+    string params = 5; // JSON string of extra parameters
+}
+
+enum TradeSide {
+    buy = 0;
+    sell = 1;
+}
+
+message HistoricTrade {
+    string id = 1; // string trade id
+    uint64 timestamp = 2; // Unix timestamp in milliseconds
+    string datetime = 3; // ISO8601 datetime with milliseconds
+    string symbol = 4; // symbol
+    string order = 5; // string order id or undefined/None/null
+    string type = 6; // order type, 'market', 'limit' or undefined/None/null
+    TradeSide side = 7; // direction of the trade, 'buy' or 'sell'
+    double price = 8; // float price in quote currency
+    double amount = 9; // amount of base currency
+    string info = 10; // the original decoded JSON as is
 }
