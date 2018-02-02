@@ -80,4 +80,11 @@ describe('Exchange Service', () => {
             done();
         });
     });
+
+    it('getTickers', done => {
+        const call = client.getTradePairs({ handle: 1 });
+        call.on('end', () => {
+            done();
+        });
+    });
 });
