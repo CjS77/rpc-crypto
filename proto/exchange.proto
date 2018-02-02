@@ -36,10 +36,17 @@ service Exchange {
         };
     }
 
-    // Return the latest ticket for the given exchange and trade pair
+    // Return the latest ticker for the given exchange and trade pair
     rpc getTicker (getTickerRequest) returns (Ticker) {
         option (google.api.http) = {
             get: "/ticker/{exchangeHandle}"
+        };
+    }
+
+    // Return all tickers for all products given exchange
+    rpc getTickers (SimpleExchangeRequest) returns (stream Ticker) {
+        option (google.api.http) = {
+            get: "/tickers/{exchangeHandle}"
         };
     }
 }

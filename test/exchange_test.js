@@ -119,10 +119,11 @@ describe('exchange service module', () => {
     });
 
     it('listExchanges', done => {
-        const writable = newStream();
+        const writable = newCall();
         exchange.listExchanges(writable);
         writable.on('finish', () => {
             assert.ok(writable.count > 90);
+            assert.equal(writable.errorCount, 0);
             done();
         });
     });
@@ -168,15 +169,13 @@ describe('exchange service module', () => {
         nock('https://api.gdax.com')
             .get('/products')
             .reply(503, { message: 'borked' });
-        const call = newStream();
-        call.request = { handle: 1 };
+        const call = newCall({ handle: 1 });
         exchange.getTradePairs(call);
         call.on('finish', () => {
             assert.equal(call.count, 0);
+            assert.equal(call.errorCount, 1);
+            assert.equal(call.errors[0].code, grpc.status.UNAVAILABLE);
             done();
-        });
-        call.on('error', msg => {
-            assert.equal(msg.code, grpc.status.UNAVAILABLE);
         });
     });
 
@@ -208,11 +207,11 @@ describe('exchange service module', () => {
                     'max_market_funds': '50'
                 }
             ]);
-        const call = newStream();
-        call.request = { handle: 1 };
+        const call = newCall({ handle: 1 });
         exchange.getTradePairs(call);
         call.on('finish', () => {
             assert.equal(call.count, 2);
+            assert.equal(call.errorCount, 0);
             const BTCUSD = call.data[0];
             assert.equal(BTCUSD.id, 'BTC-USD');
             assert.equal(BTCUSD.symbol, 'BTC/USD');
@@ -283,18 +282,40 @@ describe('exchange service module', () => {
             done();
         });
     });
+
+    it('getTickers', done => {
+        const call = newCall({ handle: 1 });
+        exchange.getTickers(call);
+        call.on('finish', () => {
+            assert.equal(call.errorCount, 1);
+            assert.equal(call.errors[0].code, grpc.status.UNIMPLEMENTED);
+            done();
+        });
+    });
 });
 
-function newStream() {
+function newCall(req) {
     const writable = new streams.Writable({
         objectMode: true,
         write: function(obj, enc, cb) {
             this.count++;
             this.data.push(obj);
             cb(null);
+        },
+        final: function(cb) {
+            this.closed = true;
+            cb();
         }
     });
+    writable.request = req;
     writable.count = 0;
     writable.data = [];
+    writable.errors = [];
+    writable.errorCount = 0;
+    writable.closed = false;
+    writable.on('error', err => {
+        writable.errorCount++;
+        writable.errors.push(err);
+    });
     return writable;
 }
