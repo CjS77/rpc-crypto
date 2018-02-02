@@ -11,7 +11,7 @@
     "build": "./proto/gen_protos.sh",
     "test:mocha": "NODE_ENV=test nyc mocha test/*_test.js",
     "test:mocha_cov": "NODE_ENV=test nyc -r lcovonly mocha test/*_test.js && nyc report --reporter=text-lcov | coveralls",
-    "test:integration": "NODE_ENV=test mocha --timeout 15000 test/integration/*_test.js",
+    "test:integration": "NODE_ENV=test mocha --timeout 30000 test/integration/*_test.js",
     "test": "npm run lint && npm run test:mocha"
   },
   "repository": {

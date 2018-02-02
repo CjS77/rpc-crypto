@@ -349,6 +349,149 @@ describe('exchange service module', () => {
             done();
         });
     });
+
+    it('getCandles', done => {
+        nock('https://api.gdax.com')
+            .get('/products/BTC-USD/candles')
+            .query({ granularity: '300' })
+            .reply(200, [
+                [
+                    1517593800,
+                    8666.00,
+                    8699.00,
+                    8682.00,
+                    8670.00,
+                    4.93
+                ],
+                [
+                    1517593740,
+                    8666.59,
+                    8735,
+                    8735,
+                    8684.96,
+                    14.092251369999998
+                ]]);
+        const req = {
+            handle: 1,
+            symbol: 'BTC/USD',
+            timeframe: 'tf5m'
+        };
+        exchange.getCandles({ request: req }, (err, res) => {
+            assert.ifError(err);
+            assert.ok(Array.isArray(res));
+            assert.deepEqual(res[0], {
+                timestamp: 1517593800000,
+                low: 8666,
+                high: 8699,
+                open: 8682,
+                close: 8670,
+                volume: 4.93
+            });
+            done();
+        });
+    });
+
+    it('getCandles with no handle', done => {
+        const req = {
+            symbol: 'BTC/USD'
+        };
+        exchange.getCandles({ request: req }, err => {
+            assert.equal(err.code, grpc.status.INVALID_ARGUMENT);
+            done();
+        });
+    });
+
+    it('getCandles with incorrect handle', done => {
+        const req = {
+            handle: -1,
+            symbol: 'BTC/USD'
+        };
+        exchange.getCandles({ request: req }, err => {
+            assert.equal(err.code, grpc.status.NOT_FOUND);
+            done();
+        });
+    });
+
+    it('getCandles with GDAX down', done => {
+        nock('https://api.gdax.com')
+            .get('/products/BTC-USD/Candles')
+            .reply(404, {});
+        const req = {
+            handle: 1,
+            symbol: 'BTC/USD'
+        };
+        exchange.getCandles({ request: req }, (err, res) => {
+            assert.equal(err.code, grpc.status.NOT_FOUND);
+            done();
+        });
+    });
+
+    it('getTradeHistory', done => {
+        nock('https://api.gdax.com')
+            .get('/products/BTC-USD/trades')
+            .reply(200, [
+                {
+                    'time': '2018-02-02T18:48:47.949Z',
+                    'trade_id': 35590422,
+                    'price': '8599.98000000',
+                    'size': '0.00761724',
+                    'side': 'buy'
+                },
+                {
+                    'time': '2018-02-02T18:48:47.949Z',
+                    'trade_id': 35590421,
+                    'price': '8600.00000000',
+                    'size': '0.37760699',
+                    'side': 'buy'
+                },
+                {
+                    'time': '2018-02-02T18:48:47.697Z',
+                    'trade_id': 35590420,
+                    'price': '8600.00000000',
+                    'size': '0.20378836',
+                    'side': 'buy'
+                }]);
+        const call = newCall({ handle: 1, symbol: 'BTC/USD', limit: 2 });
+        exchange.getTradeHistory(call);
+        call.on('finish', () => {
+            assert.equal(call.errorCount, 0);
+            assert.equal(call.count, 2);
+            done();
+        });
+    });
+
+    it('getTradeHistory with no handle', done => {
+        const call = newCall({ symbol: 'BTC/USD', limit: 2 });
+        exchange.getTradeHistory(call);
+        call.on('finish', () => {
+            assert.equal(call.errorCount, 1);
+            assert.equal(call.count, 0);
+            done();
+        });
+    });
+
+    it('getTradeHistory with incorrect handle', done => {
+        const call = newCall({ handle: 99, symbol: 'BTC/USD', limit: 2 });
+        exchange.getTradeHistory(call);
+        call.on('finish', () => {
+            assert.equal(call.errorCount, 1);
+            assert.equal(call.count, 0);
+            done();
+        });
+    });
+
+    it('getTradeHistory with GDAX down', done => {
+        nock('https://api.gdax.com')
+            .get('/products/BTC-USD/trades')
+            .reply(503, {});
+        const call = newCall({ handle: 1, symbol: 'BTC/USD', limit: 2 });
+        exchange.getTradeHistory(call);
+        call.on('finish', () => {
+            assert.equal(call.errorCount, 1);
+            assert.equal(call.count, 0);
+            done();
+        });
+    });
 });
 
 function newCall(req) {

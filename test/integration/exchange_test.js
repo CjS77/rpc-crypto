@@ -82,9 +82,13 @@ describe('Exchange Service', () => {
     });
 
     it('getTickers', done => {
-        const call = client.getTradePairs({ handle: 1 });
-        call.on('end', () => {
+        const call = client.getTickers({ handle: 1 });
+        call.on('error', err => {
+            assert.equal(err.code, 12);
             done();
+        });
+        call.on('data', () => {
+            throw new Error('Should not get data');
         });
     });
 
@@ -95,6 +99,31 @@ describe('Exchange Service', () => {
             assert.ok(res.timestamp);
             assert.ok(res.bids);
             assert.ok(res.asks);
+            done();
+        });
+    });
+
+    it('getCandles', done => {
+        const req = { handle: 1, symbol: 'BTC/USD', since: Date.parse('2018-01-01'), timeframe: 8, limit: 10 };
+        client.getCandles(req, (err, res) => {
+            assert.ifError(err);
+            assert.ok(Array.isArray(res.candles));
+            done();
+        });
+    });
+
+    it('getTradeHistory', done => {
+        const call = client.getTradeHistory({ handle: 1, symbol: 'BTC/EUR', limit: 2 });
+        let count = 0;
+        call.on('data', trade => {
+            count++;
+            assert.ok(trade.side);
+            assert.ok(trade.price);
+            assert.ok(trade.amount);
+            assert.equal(trade.symbol, 'BTC/EUR');
+        });
+        call.on('end', () => {
+            assert.equal(count, 2);
             done();
         });
     });
