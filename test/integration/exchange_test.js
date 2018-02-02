@@ -87,4 +87,15 @@ describe('Exchange Service', () => {
             done();
         });
     });
+
+    it('getOrderbook', done => {
+        const req = { handle: 1, symbol: 'ETH/BTC' };
+        client.getOrderbook(req, (err, res) => {
+            assert.ifError(err);
+            assert.ok(res.timestamp);
+            assert.ok(res.bids);
+            assert.ok(res.asks);
+            done();
+        });
+    });
 });

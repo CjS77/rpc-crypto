@@ -49,6 +49,13 @@ service Exchange {
             get: "/tickers/{exchangeHandle}"
         };
     }
+
+    // Fetch the orderbok for a given trade pair
+    rpc getOrderbook (OrderbookRequest) returns (Orderbook) {
+        option (google.api.http) = {
+            get: "/orderbook/{exchangeHandle}/{symbol}"
+        };
+    }
 }
 
 message Empty {
@@ -188,4 +195,23 @@ message Ticker {
     double base_volume = 16; // volume of base currency
     double quote_volume = 17; // volume of quote currency
     string info = 18; // original stringified JSON object of exchange response
+}
+
+message OrderbookRequest {
+    uint32 handle = 1; // the handle for the exchange to query
+    string symbol = 2; // The trade pair to query
+    string params = 3; // JSON string of additional parameters
+}
+
+// A representation of an aggregated orderbook level.
+message AggregatedLevel {
+    double price = 1; // The price level for the orders
+    double amount = 2; // The size of the base currency in this level
+}
+
+message Orderbook {
+    uint64 timestamp = 1; // Unix epoch
+    string datetime = 2; // Human-readable time stamp
+    repeated AggregatedLevel bids = 4; // Ordered array of buy orders from high to low
+    repeated AggregatedLevel asks = 5; // Ordered array of sell orders from low to high
 }

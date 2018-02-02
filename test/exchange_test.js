@@ -292,6 +292,63 @@ describe('exchange service module', () => {
             done();
         });
     });
+
+    it('getOrderbook', done => {
+        nock('https://api.gdax.com')
+            .get('/products/BTC-USD/book')
+            .query({ 'level': '2' })
+            .reply(200, {
+                'sequence': 5006615368,
+                'bids': [['8625.35', '18.60208186', 10], ['8625', '0.75', 1]],
+                'asks': [['8625.36', '1.24397389', 7], ['8625.79', '0.00423124', 1], ['8625.8', '0.42877124', 1]]
+            });
+        const req = {
+            handle: 1,
+            symbol: 'BTC/USD'
+        };
+        exchange.getOrderbook({ request: req }, (err, res) => {
+            assert.ifError(err);
+            assert.ok(res.timestamp);
+            assert.equal(res.bids.length, 2);
+            assert.equal(res.asks.length, 3);
+            done();
+        });
+    });
+
+    it('getOrderbook with no handle', done => {
+        const req = {
+            symbol: 'BTC/USD'
+        };
+        exchange.getOrderbook({ request: req }, err => {
+            assert.equal(err.code, grpc.status.INVALID_ARGUMENT);
+            done();
+        });
+    });
+
+    it('getOrderbook with incorrect handle', done => {
+        const req = {
+            handle: -1,
+            symbol: 'BTC/USD'
+        };
+        exchange.getOrderbook({ request: req }, err => {
+            assert.equal(err.code, grpc.status.NOT_FOUND);
+            done();
+        });
+    });
+
+    it('getOrderbook with GDAX down', done => {
+        nock('https://api.gdax.com')
+            .get('/products/BTC-USD/Orderbook')
+            .reply(404, {});
+        const req = {
+            handle: 1,
+            symbol: 'BTC/USD'
+        };
+        exchange.getOrderbook({ request: req }, (err, res) => {
+            assert.equal(err.code, grpc.status.NOT_FOUND);
+            done();
+        });
+    });
 });
 
 function newCall(req) {
